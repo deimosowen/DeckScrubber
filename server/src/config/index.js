@@ -1,0 +1,6 @@
+module.exports = {
+    APP_PASSWORD: process.env.APP_PASSWORD,
+    DEPLOY_FOLDER: process.env.DEPLOY_FOLDER,
+    NGINX_CONTAINER_NAME: process.env.NGINX_CONTAINER_NAME,
+    NGINX_CONFIG_FOLDER: process.env.NGINX_CONFIG_FOLDER
+};

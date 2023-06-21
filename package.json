@@ -1,0 +1,8 @@
+{
+    "name": "deckscrubber",
+    "version": "1.0.0",
+    "author": "Denis Ushanev",
+    "scripts": {
+        "build": "npm run build --prefix client && npm run build --prefix server"
+    }
+}
