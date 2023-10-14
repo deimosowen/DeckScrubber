@@ -1,4 +1,5 @@
 const path = require('path');
+const generateProdPackage = require('./generateProdPackage');
 
 module.exports = {
     mode: 'production',
@@ -24,5 +25,19 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js'],
-    }
+    },
+    externals: {
+        sqlite3: 'commonjs sqlite3',
+        '@mapbox/node-pre-gyp': 'commonjs @mapbox/node-pre-gyp',
+        'node-gyp': 'commonjs node-gyp',
+    },
+    plugins: [
+        {
+            apply: (compiler) => {
+                compiler.hooks.done.tap('AfterEmitPlugin', () => {
+                    generateProdPackage();
+                });
+            }
+        }
+    ]
 };

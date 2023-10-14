@@ -1,6 +1,6 @@
 {
-    "name": "server_deckscrubber",
-    "version": "1.0.0",
+    "name": "deckscrubber",
+    "version": "1.1.0",
     "main": "index.js",
     "scripts": {
         "start": "nodemon src/index.js",
@@ -9,10 +9,16 @@
     "author": "Denis Ushanev",
     "dependencies": {
         "@octokit/core": "^4.2.0",
+        "better-queue": "^3.8.12",
+        "better-queue-memory": "^1.0.4",
+        "better-queue-sqlite": "^1.0.7",
         "body-parser": "^1.20.2",
         "cors": "^2.8.5",
         "dotenv": "^16.3.0",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "sqlite3": "^5.1.6",
+        "winston": "^3.11.0",
+        "winston-daily-rotate-file": "^4.7.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.22.5",
