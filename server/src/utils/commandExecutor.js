@@ -6,8 +6,8 @@ const {
 
 const executeCommand = (command, options) => {
     try {
-        const isSudo = IS_SUDO === 'true';
-        const sudoPrefix = isSudo ? 'sudo ' : '';
+        const isSudo = IS_SUDO === 'false';
+        const sudoPrefix = isSudo ? '' : 'sudo ';
         const fullCommand = `${sudoPrefix}${command}`;
         return execSync(fullCommand, options);
     } catch (err) {
@@ -19,8 +19,8 @@ const executeCommand = (command, options) => {
 const executeCommandAsync = (command, options) => {
     return new Promise((resolve, reject) => {
         try {
-            const isSudo = IS_SUDO === 'true';
-            const sudoPrefix = isSudo ? 'sudo ' : '';
+            const isSudo = IS_SUDO === 'false';
+            const sudoPrefix = isSudo ? '' : 'sudo ';
             const fullCommand = `${sudoPrefix}${command}`;
 
             exec(fullCommand, options, (error, stdout, stderr) => {
