@@ -11,6 +11,9 @@ export default createStore({
         isAuthenticated: false,
     },
     mutations: {
+        logout(state) {
+            state.isAuthenticated = false;
+        },
         authenticate(state) {
             state.isAuthenticated = true;
         },

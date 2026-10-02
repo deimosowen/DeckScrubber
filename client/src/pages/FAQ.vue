@@ -1,67 +1,61 @@
-
 <template>
-    <div class="bg-gray-100 flex flex-col justify-center">
-        <div class="relative max-w-5xl mx-auto">
-            <div class="relative px-4 py-10 bg-white shadow rounded-3xl sm:p-10">
-                <div class="mx-auto">
-                    <div class="mb-8">
-                        <h1 class="text-2xl font-semibold text-center">Frequently Asked Questions</h1>
-                    </div>
+    <section class="mx-auto max-w-3xl">
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-zinc-50">Вопросы и ответы</h1>
+        <p class="mt-1 text-sm text-slate-500 dark:text-zinc-400">Коротко о том, как устроено управление пулами.</p>
 
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">What does the service do?</h2>
-                        <p class="text-gray-600 mt-2">This service provides an interface for users to manage containers,
-                            allowing them to start, stop, and remove containers with ease.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">What technologies are used in this service?</h2>
-                        <p class="text-gray-600 mt-2">The service is built using Vue.js for the frontend, and it may use
-                            various backend technologies such as Node.js. Additionally, it utilizes TailwindCSS for styling
-                            and Docker for container management.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">How do I start a container?</h2>
-                        <p class="text-gray-600 mt-2">Go to the Containers section, find the container you want to start,
-                            and click the "Start" button.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">How do I stop a container?</h2>
-                        <p class="text-gray-600 mt-2">Go to the Containers section, find the container you want to stop, and
-                            click the "Stop" button.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">How do I remove a container?</h2>
-                        <p class="text-gray-600 mt-2">Go to the Containers section, find the container you want to remove,
-                            and click the "Remove" button. Note that this action is irreversible.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">I have suggestions or feedback. How can I get in touch with you?
-                        </h2>
-                        <p class="text-gray-600 mt-2">We appreciate your feedback and suggestions for improving the service.
-                            Please use the GitHub button on our site to go to the repository page. There, you can leave your
-                            questions and suggestions in the Issues section.</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h2 class="text-xl font-semibold">I encountered a problem. How can I get help?</h2>
-                        <p class="text-gray-600 mt-2">If you're experiencing issues with the service, please check this FAQ
-                            section for possible solutions. If you cannot find an answer to your question, use the GitHub
-                            button on our site to go to the repository, where you can leave a request for help in the Issues
-                            section.</p>
-                    </div>
-                </div>
-            </div>
+        <div
+            class="mt-6 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+            <Disclosure v-for="item in items" :key="item.q" as="div" v-slot="{ open }">
+                <DisclosureButton
+                    class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-slate-900 hover:bg-slate-50 dark:text-zinc-100 dark:hover:bg-zinc-800/40">
+                    {{ item.q }}
+                    <IconChevronDown class="h-4 w-4 shrink-0 text-slate-400 transition-transform dark:text-zinc-500"
+                        :class="{ 'rotate-180': open }" aria-hidden="true" />
+                </DisclosureButton>
+                <DisclosurePanel class="px-5 pb-4 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
+                    {{ item.a }}
+                </DisclosurePanel>
+            </Disclosure>
         </div>
-    </div>
+    </section>
 </template>
 
-<script>
-export default {
-    name: "FAQ",
-};
+<script setup>
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
+import { IconChevronDown } from '@tabler/icons-vue';
+
+const items = [
+    {
+        q: 'Что такое пул?',
+        a: 'Пул — это папка с файлом docker-compose.yml в каталоге пулов на сервере. Сервис запускает и останавливает его контейнеры, снимает дамп базы данных и удаляет пул целиком.',
+    },
+    {
+        q: 'Как запустить или остановить пул?',
+        a: 'В строке пула нажмите «Запустить» или «Остановить». Это одна кнопка: она меняется в зависимости от статуса. Пока идёт операция, в строке виден прогресс.',
+    },
+    {
+        q: 'Как снять дамп базы данных?',
+        a: 'Нажмите «Снять дамп БД» в строке запущенного пула. Дамп сохраняется на сервере в папке дампов. Пул при этом не останавливается. В колонке «Последний дамп БД» видны дата, размер и общее число дампов.',
+    },
+    {
+        q: 'Почему кнопки дампа и восстановления неактивны?',
+        a: 'Дамп и восстановление выполняются в контейнере базы данных, поэтому пул должен быть запущен. Восстановить базу можно, только если есть хотя бы один дамп. Подсказка при наведении на кнопку объясняет причину.',
+    },
+    {
+        q: 'Что делает «Восстановить БД»?',
+        a: 'Обрывает подключения к базе, пересоздаёт её и заливает из последнего дампа этого пула. Текущие данные в базе пропадают, поэтому перед восстановлением нужно подтвердить действие.',
+    },
+    {
+        q: 'Что происходит при удалении пула?',
+        a: 'Останавливаются и удаляются контейнеры и тома, удаляются конфиг nginx и папка пула. Дампы базы остаются в папке дампов. Действие нельзя отменить.',
+    },
+    {
+        q: 'Что значит статус «Ошибка статуса»?',
+        a: 'Сервер не смог получить состояние контейнеров от docker. Проверьте, что docker доступен пользователю, под которым запущен сервис, и что sudo не просит пароль.',
+    },
+    {
+        q: 'Где задать предложения или сообщить о проблеме?',
+        a: 'Откройте репозиторий проекта на GitHub по ссылке внизу страницы и создайте обращение в разделе Issues.',
+    },
+];
 </script>
