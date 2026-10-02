@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html class="h-full bg-gray-100">
+<html lang="ru" class="h-full">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/src/assets/vue.svg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title></title>
+  <script>
+    // Применяем тему до отрисовки, чтобы не мигала светлая при тёмном выборе
+    (function () {
+      try {
+        var stored = localStorage.getItem('theme');
+        var dark = stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      } catch (e) { }
+    })();
+  </script>
+  <title>DeckScrubber</title>
 </head>
 
-<body class="h-full">
+<body class="h-full bg-slate-50 text-slate-900 antialiased dark:bg-zinc-950 dark:text-zinc-100">
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
 </body>

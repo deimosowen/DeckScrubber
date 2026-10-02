@@ -1,33 +1,32 @@
 <template>
-    <span :class="[statusClass, 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset']">
-        {{ pull.status }}
+    <span class="inline-flex items-center gap-2 text-sm" :class="view.text">
+        <IconLoader2 v-if="busy" class="h-4 w-4 animate-spin" aria-hidden="true" />
+        <span v-else class="h-2 w-2 shrink-0 rounded-full" :class="view.dot" aria-hidden="true"></span>
+        {{ busy || view.label }}
     </span>
 </template>
 
-<script>
-export default {
-    name: 'PullStatus',
-    props: {
-        pull: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        statusClass() {
-            switch (this.pull.status) {
-                case 'Running':
-                    return 'bg-green-50 text-green-700 ring-green-600/20';
-                case 'Stopped':
-                    return 'bg-blue-50 text-blue-700 ring-blue-600/20';
-                case 'Remove':
-                case 'Removing':
-                    return 'bg-red-50 text-red-700 ring-red-600/20';
-                default:
-                    return 'bg-gray-200 text-gray-700 ring-gray-600/20';
-            }
-        }
+<script setup>
+import { computed } from 'vue';
+import { IconLoader2 } from '@tabler/icons-vue';
+
+const props = defineProps({
+    status: { type: String, default: '' },
+    // Подпись выполняемой операции («Снимаем дамп…»); если задана, заменяет статус
+    busy: { type: String, default: '' },
+});
+
+const view = computed(() => {
+    if (props.busy) return { text: 'text-amber-600 dark:text-amber-400' };
+    switch (props.status) {
+        case 'Running':
+            return { label: 'Работает', dot: 'bg-emerald-500', text: 'text-slate-700 dark:text-zinc-200' };
+        case 'Stopped':
+            return { label: 'Остановлен', dot: 'bg-slate-300 dark:bg-zinc-600', text: 'text-slate-500 dark:text-zinc-400' };
+        case 'error':
+            return { label: 'Ошибка статуса', dot: 'bg-red-500', text: 'text-red-600 dark:text-red-400' };
+        default:
+            return { label: props.status || '—', dot: 'bg-slate-300 dark:bg-zinc-600', text: 'text-slate-500 dark:text-zinc-400' };
     }
-}
+});
 </script>
-  

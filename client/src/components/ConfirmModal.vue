@@ -1,65 +1,70 @@
 <template>
-    <div v-if="isOpen" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
-        aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <TransitionRoot as="template" :show="isOpen">
+        <Dialog class="relative z-40" :initialFocus="cancelButton" @close="$emit('cancel')">
+            <TransitionChild as="template" enter="ease-out duration-200" enter-from="opacity-0" enter-to="opacity-100"
+                leave="ease-in duration-150" leave-from="opacity-100" leave-to="opacity-0">
+                <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60" aria-hidden="true"></div>
+            </TransitionChild>
 
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div
-                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                {{ title }}
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">
-                                    {{ message }}
-                                </p>
+            <div class="fixed inset-0 flex items-end justify-center p-4 sm:items-center">
+                <TransitionChild as="template" enter="ease-out duration-200"
+                    enter-from="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+                    enter-to="translate-y-0 opacity-100 sm:scale-100" leave="ease-in duration-150"
+                    leave-from="opacity-100 sm:scale-100" leave-to="opacity-0 sm:scale-95">
+                    <DialogPanel
+                        class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-200 dark:bg-zinc-900 dark:ring-zinc-800">
+                        <div class="flex gap-4">
+                            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                                :class="tone === 'danger'
+                                    ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
+                                    : 'bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400'">
+                                <IconAlertTriangle class="h-5 w-5" aria-hidden="true" />
+                            </span>
+                            <div class="min-w-0">
+                                <DialogTitle class="text-base font-semibold text-slate-900 dark:text-zinc-100">
+                                    {{ title }}
+                                </DialogTitle>
+                                <p class="mt-1.5 text-sm text-slate-500 dark:text-zinc-400">{{ message }}</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button @click="$emit('confirm')" type="button"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        {{ confirmLabel }}
-                    </button>
-                    <button @click="$emit('cancel')" type="button"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
-                        {{ cancelLabel }}
-                    </button>
-                </div>
+                        <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                            <button ref="cancelButton" type="button"
+                                class="inline-flex h-9 items-center justify-center rounded-lg px-4 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:text-zinc-200 dark:ring-zinc-700 dark:hover:bg-zinc-800"
+                                @click="$emit('cancel')">
+                                {{ cancelLabel }}
+                            </button>
+                            <button type="button"
+                                class="inline-flex h-9 items-center justify-center rounded-lg px-4 text-sm font-medium text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                :class="tone === 'danger'
+                                    ? 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600'
+                                    : 'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'"
+                                @click="$emit('confirm')">
+                                {{ confirmLabel }}
+                            </button>
+                        </div>
+                    </DialogPanel>
+                </TransitionChild>
             </div>
-        </div>
-    </div>
+        </Dialog>
+    </TransitionRoot>
 </template>
-  
-<script>
-export default {
-    props: {
-        isOpen: {
-            type: Boolean,
-            required: true
-        },
-        title: {
-            type: String,
-            default: 'Modal Title'
-        },
-        message: {
-            type: String,
-            default: ''
-        },
-        confirmLabel: {
-            type: String,
-            default: 'Confirm'
-        },
-        cancelLabel: {
-            type: String,
-            default: 'Cancel'
-        }
-    }
-}
+
+<script setup>
+import { ref } from 'vue';
+import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue';
+import { IconAlertTriangle } from '@tabler/icons-vue';
+
+defineProps({
+    isOpen: { type: Boolean, required: true },
+    title: { type: String, default: '' },
+    message: { type: String, default: '' },
+    confirmLabel: { type: String, default: 'Подтвердить' },
+    cancelLabel: { type: String, default: 'Отмена' },
+    // danger | warning
+    tone: { type: String, default: 'danger' },
+});
+defineEmits(['confirm', 'cancel']);
+
+// Фокус по умолчанию на «Отмена», чтобы случайный Enter не удалил пул
+const cancelButton = ref(null);
 </script>

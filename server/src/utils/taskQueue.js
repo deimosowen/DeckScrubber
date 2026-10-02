@@ -26,7 +26,7 @@ function queueTask(taskId, func) {
     return new Promise((resolve, reject) => {
         if (tasksInProgress[taskId]) {
             logger.warn(`Attempted to add task with ID ${taskId} while it's already in the queue.`);
-            return;
+            return reject(new Error(`Task ${taskId} is already in the queue`));
         }
 
         tasksInProgress[taskId] = true;

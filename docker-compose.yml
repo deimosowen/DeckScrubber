@@ -1,0 +1,24 @@
+services:
+  deckscrubber:
+    build: .
+    image: deckscrubber:latest
+    container_name: deckscrubber
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-9009}:3000"
+    environment:
+      APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in .env}
+      DEPLOY_FOLDER: ${DEPLOY_FOLDER:?Set DEPLOY_FOLDER in .env}
+      BACKUP_FOLDER: /backups
+      DB_CONTAINER_PREFIX: ${DB_CONTAINER_PREFIX:-postgresdb_}
+      DB_NAME: ${DB_NAME:-CasePro_Test}
+      DB_USER: ${DB_USER:-postgres}
+      NGINX_CONTAINER_NAME: ${NGINX_CONTAINER_NAME:-nginx}
+      NGINX_CONFIG_FOLDER: /nginx-conf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Тот же путь внутри и снаружи: docker compose передаёт демону хоста пути из compose-файлов пулов
+      - ${DEPLOY_FOLDER}:${DEPLOY_FOLDER}
+      - ${BACKUP_FOLDER:-/home/deploy/backups/dumps}:/backups
+      - ${NGINX_CONFIG_FOLDER:-./nginx-conf}:/nginx-conf
+      - ./logs:/app/logs

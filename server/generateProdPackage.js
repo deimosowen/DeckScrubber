@@ -11,9 +11,7 @@ const generateProdPackage = () => {
             "init": "npm install",
             "start": "node server.bundle.js"
         },
-        dependencies: {
-            "sqlite3": basePackageJson.dependencies["sqlite3"]
-        }
+        dependencies: {}
     };
 
     fs.writeFileSync(path.join(__dirname, '../dist', 'package.json'), JSON.stringify(prodPackage, null, 2));
